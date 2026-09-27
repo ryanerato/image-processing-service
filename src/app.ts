@@ -22,7 +22,7 @@ function fromError(err: unknown): AppError {
 
 function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   const error = fromError(err)
-  if (error.status >= 500) console.error(err)
+  if (error.status >= 500 || error.cause) req.log.error({ err: error }, error.code)
   res.status(error.status).json({
     error: { code: error.code, message: error.message, details: error.details },
   })
