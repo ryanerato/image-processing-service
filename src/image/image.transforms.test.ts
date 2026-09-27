@@ -119,4 +119,14 @@ describe('transformImage', () => {
       })
     })
   })
+
+  describe('orientation', () => {
+    test('applies EXIF orientation before resizing', async () => {
+      // Stored as 400×300 pixels, tagged to display rotated 90° (as 300×400)
+      const input = await sharp(await makeImage(400, 300, 'jpeg')).withMetadata({ orientation: 6 }).toBuffer()
+      const { info } = await transformImage(input, options({ width: 150 }))
+      assert.equal(info.width, 150)
+      assert.equal(info.height, 200)
+    })
+  })
 })

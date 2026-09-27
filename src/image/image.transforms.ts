@@ -20,7 +20,7 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
   const { width, height, crop, format, quality } = options
 
   try {
-    let img = sharp(input, { limitInputPixels: MAX_INPUT_PIXELS })
+    let img = sharp(input, { limitInputPixels: MAX_INPUT_PIXELS, autoOrient: true })
 
     if (width || height) {
       img = img.resize({ width, height, fit: CROP_MODES[crop] })
