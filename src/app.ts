@@ -1,7 +1,10 @@
 import express, { type Express, type Request, type Response, type NextFunction } from 'express'
 import { ZodError } from 'zod'
+import { pinoHttp } from 'pino-http'
+
 
 import { AppError } from './errors.ts'
+import { logger } from './util/logger.ts'
 
 function fromError(err: unknown): AppError {
   if (err instanceof AppError) return err
@@ -38,6 +41,15 @@ export function createApp(): Express {
   app.disable('x-powered-by')
   app.set('query parser', 'simple')
 
+  // Log only what's needed to debug a request: source URLs can carry signed
+  // tokens, and headers and client IPs are personal data
+  app.use(pinoHttp({
+    logger,
+    serializers: {
+      req: (req) => ({ id: req.id, method: req.method, path: req.url.split('?')[0] }),
+      res: (res) => ({ statusCode: res.statusCode }),
+    },
+  }))
   app.use(errorHandler)
 
   app.use(['/process', '/image'], ImageRouter)
