@@ -23,8 +23,7 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
     let img = sharp(input, { limitInputPixels: MAX_INPUT_PIXELS })
 
     if (width || height) {
-      img = img.resize({ width, height,
-                        fit: CROP_MODES[crop], withoutEnlargement: true })
+      img = img.resize({ width, height, fit: CROP_MODES[crop] })
     }
 
     if (format || quality) {

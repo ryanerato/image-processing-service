@@ -39,10 +39,10 @@ describe('transformImage', () => {
       assert.equal(info.height, 75)
     })
 
-    test('does not upscale beyond the source size', async () => {
+    test('enlarges when the requested size is larger than the source', async () => {
       const { info } = await transformImage(await makeImage(400, 300), options({ width: 800 }))
-      assert.equal(info.width, 400)
-      assert.equal(info.height, 300)
+      assert.equal(info.width, 800)
+      assert.equal(info.height, 600)
     })
   })
 
