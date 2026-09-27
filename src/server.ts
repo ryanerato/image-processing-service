@@ -1,4 +1,5 @@
 import { createApp } from './app.ts'
+import { logger } from './util/logger.ts'
 
 const DEFAULT_PORT = 3000
 
@@ -17,17 +18,17 @@ function readPort(): number {
 const port = readPort()
 const server = createApp().listen(port, (error?: Error) => {
   if (error) {
-    console.error('Failed to start server:', error)
+    logger.error({ err: error }, 'Failed to start server')
     process.exit(1)
   }
-  console.log(`Server listening on port ${port}`)
+  logger.info(`Server listening on port ${port}`)
 })
 
 function shutdown(signal: NodeJS.Signals): void {
-  console.log(`Received ${signal}, shutting down`)
+  logger.info(`Received ${signal}, shutting down`)
   server.close((error) => {
     if (error) {
-      console.error('Error during shutdown:', error)
+      logger.error({ err: error }, 'Error during shutdown')
       process.exit(1)
     }
     process.exit(0)
