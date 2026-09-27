@@ -25,6 +25,8 @@ function errorHandler(err: Error, req: Request, res: Response, next: NextFunctio
   })
 }
 
+import ImageRouter from './image/image.router.ts'
+
 /**
  * Builds the Express application. No routes, auth, or body parsers yet
  * query strings are parsed with Node's `querystring` ("simple" parser), so
@@ -37,6 +39,8 @@ export function createApp(): Express {
   app.set('query parser', 'simple')
 
   app.use(errorHandler)
+
+  app.use(['/process', '/image'], ImageRouter)
 
   return app
 }
