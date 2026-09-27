@@ -11,3 +11,9 @@ export class AppError extends Error {
     this.details = options?.details
   }
 }
+
+export class UnprocessableImageError extends AppError {
+  constructor(err: unknown) {
+    super(422, 'UNPROCESSABLE_IMAGE', 'Source could not be processed as an image', { cause: err })
+  }
+}
