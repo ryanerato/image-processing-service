@@ -11,6 +11,8 @@ export type TransformOutput = {
   info: OutputInfo
 }
 
+const MAX_INPUT_PIXELS = 8192 * 8192
+
 const isOutputFormat = (format: string | undefined): format is (typeof OUTPUT_FORMATS)[number] =>
   (OUTPUT_FORMATS as readonly (string | undefined)[]).includes(format)
 
@@ -18,7 +20,7 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
   const { width, height, crop, format, quality } = options
 
   try {
-    let img = sharp(input)
+    let img = sharp(input, { limitInputPixels: MAX_INPUT_PIXELS })
 
     if (width || height) {
       img = img.resize({ width, height,
