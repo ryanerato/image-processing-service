@@ -7,7 +7,7 @@ class MaxSizeExceededError extends AppError {
 }
 
 const MAX_MB = 10
-const MAX_BYTES = MAX_MB * 1024 * 1024
+export const MAX_BYTES = MAX_MB * 1024 * 1024
 const TIMEOUT_MS = 5000
 
 export type FetchContentOptions = {
