@@ -50,9 +50,10 @@ export function createApp(): Express {
       res: (res) => ({ statusCode: res.statusCode }),
     },
   }))
-  app.use(errorHandler)
 
   app.use(['/process', '/image'], ImageRouter)
+
+  app.use(errorHandler)
 
   return app
 }
