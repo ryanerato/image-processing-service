@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import express, { type Express, type Request, type Response, type NextFunction } from 'express'
 import { ZodError } from 'zod'
 import { pinoHttp } from 'pino-http'
@@ -30,6 +31,9 @@ function errorHandler(err: Error, req: Request, res: Response, next: NextFunctio
 
 import ImageRouter from './image/image.router.ts'
 
+// Resolved relative to this file so the server works from any directory
+const SAMPLES_DIR = fileURLToPath(new URL('../samples', import.meta.url))
+
 export function createApp(): Express {
   const app = express()
 
@@ -46,6 +50,7 @@ export function createApp(): Express {
     },
   }))
 
+  app.use('/samples', express.static(SAMPLES_DIR))
   app.use(['/process', '/image'], ImageRouter)
 
   app.use(errorHandler)

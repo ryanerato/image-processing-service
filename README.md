@@ -48,13 +48,13 @@ Crop modes follow Cloudinary's naming:
 
 ```sh
 # Resize
-curl "localhost:3000/process?url=https://example.com/image.jpg&width=500&height=300" -o out.jpg
+curl "localhost:3000/process?url=http://localhost:3000/samples/flower.jpg&width=500&height=300" -o out.jpg
 
 # Convert format
-curl "localhost:3000/process?url=https://example.com/image.png&format=jpeg&quality=80" -o out.jpg
+curl "localhost:3000/process?url=http://localhost:3000/samples/transparent.png&format=jpeg&quality=80" -o out.jpg
 
 # Combine
-curl "localhost:3000/process?url=https://example.com/image.jpg&width=800&height=600&format=webp&crop=fill" -o out.webp
+curl "localhost:3000/process?url=http://localhost:3000/samples/flower.jpg&width=800&height=600&format=webp&crop=fill" -o out.webp
 ```
 
 ### Errors
