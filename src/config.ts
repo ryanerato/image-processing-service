@@ -5,6 +5,7 @@ const schema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   SOURCE_MAX_BYTES: z.coerce.number().int().positive().default(10 * 1024 * 1024),
   SOURCE_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
+  SOURCE_MAX_PIXELS: z.coerce.number().int().positive().default(8192 * 8192)
 })
 
 export const config = schema.parse(process.env)
