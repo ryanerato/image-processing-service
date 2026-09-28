@@ -149,11 +149,20 @@ src/
   testing/               Test server and MSW setup
 ```
 
+## Scaling
+
+The service is stateless, so it scales horizontally behind a load balancer.
+
+- **Caching:** responses are cacheable for 7 days, so browsers and CDNs serve repeat requests without reprocessing.
+- **CPU:** processing is CPU-bound; `sharp` uses multiple cores via `libuv`'s thread pool.
+- **Memory:** each request's memory is bounded by the size and pixel limits; how many run at once is left to the surrounding infrastructure (load balancer, autoscaling).
+- **Source fetches:** capped by the timeout.
+
 ## Known limitations and future work
 
 - **SSRF:** the service fetches any http(s) URL, including private and internal addresses (e.g. `localhost`, cloud metadata endpoints). Blocking needs to happen at connection time so it covers DNS resolution and every redirect hop, not just the initial URL.
-- **No server-side cache:** every uncached request refetches and reprocesses the source. A CDN in front of the service is the intended caching layer.
-- **No auth or rate limiting.**
+- **No server-side cache:** every uncached request refetches and reprocesses the source. A CDN in front of the service is the intended caching layer (see Scaling).
+- **No auth or rate limiting:** the service currently accepts requests from any client. An API gateway is the intended auth and rate limiting layer.
 - **Animated GIFs:** only the first frame is processed.
 - **Camera RAW** formats are not supported.
 - **Video thumbnails** (`/video/thumbnail`, bonus): not implemented. It would extract a frame with ffmpeg and reuse the image transform.
