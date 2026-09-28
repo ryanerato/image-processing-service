@@ -1,24 +1,10 @@
 import { fileURLToPath } from 'node:url'
 import express, { type Express, type Request, type Response, type NextFunction } from 'express'
-import { ZodError } from 'zod'
 import { pinoHttp } from 'pino-http'
 
-import { AppError } from './errors.ts'
+import { fromError } from './errors.ts'
 import { logger } from './util/logger.ts'
-
-function fromError(err: unknown): AppError {
-  if (err instanceof AppError) return err
-  if (err instanceof ZodError) {
-    return new AppError(400, 'INVALID_REQUEST', 'Invalid query parameters', {
-      details: err.issues.map((i) => ({
-        // Unknown keys have no path; name them so the caller can see which param was wrong
-        field: i.code === 'unrecognized_keys' ? i.keys.join(', ') : i.path.join('.'),
-        message: i.message,
-      }))
-    })
-  }
-  return new AppError(500, 'INTERNAL_ERROR', 'Something went wrong', { cause: err })
-}
+import ImageRouter from './image/image.router.ts'
 
 function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   const error = fromError(err)
@@ -27,8 +13,6 @@ function errorHandler(err: Error, req: Request, res: Response, next: NextFunctio
     error: { code: error.code, message: error.message, details: error.details },
   })
 }
-
-import ImageRouter from './image/image.router.ts'
 
 // Resolved relative to this file so the server works from any directory
 const SAMPLES_DIR = fileURLToPath(new URL('../samples', import.meta.url))
