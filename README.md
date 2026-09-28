@@ -1,3 +1,5 @@
+![CI](https://github.com/ryanerato/image-processing-service/actions/workflows/ci.yml/badge.svg)
+
 # Image Processing Service
 
 A Cloudinary-style HTTP service that fetches an image from a URL, transforms it, and returns the result.
