@@ -88,6 +88,24 @@ describe('Images', () => {
     await assertErrorShape(response, 422, 'UNPROCESSABLE_IMAGE')
   })
 
+  test('successful responses are cacheable for 7 days', async () => {
+    serveSource(await makePng())
+
+    const response = await fetch(app.url('/process', { url: SOURCE_URL }))
+
+    assert.equal(response.status, 200)
+    assert.equal(response.headers.get('cache-control'), 'public, max-age=604800')
+  })
+
+  test('error responses are not cacheable', async () => {
+    serveSource('missing', 404)
+
+    const response = await fetch(app.url('/process', { url: SOURCE_URL }))
+
+    assert.equal(response.status, 502)
+    assert.equal(response.headers.get('cache-control'), null)
+  })
+
   for (const [format, type] of [
     ['jpeg', 'image/jpeg'],
     ['png', 'image/png'],
@@ -110,5 +128,14 @@ describe('Images', () => {
 
     const error = await assertErrorShape(response, 400, 'INVALID_REQUEST')
     assert.ok(error.details?.some((detail) => detail.field === 'widht'))
+  })
+
+  test('v changes the URL for cache busting without affecting the result', async () => {
+    serveSource(await makePng())
+
+    const response = await fetch(app.url('/process', { url: SOURCE_URL, v: '2' }))
+
+    assert.equal(response.status, 200)
+    assert.equal(response.headers.get('content-type'), 'image/png')
   })
 })

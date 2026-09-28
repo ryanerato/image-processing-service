@@ -21,6 +21,8 @@ const ImageQuerySchema = z.strictObject({
   format: z.enum([...OUTPUT_FORMATS, 'jpg']).transform((f) => (f === 'jpg' ? 'jpeg' : f)).optional(),
   quality: z.coerce.number().int().min(1).max(100).optional(),
   crop: z.enum(Object.keys(CROP_MODES) as CropMode[]).default('fit'),
+  // Cache busting only: changes the URL (the cache key) without affecting processing
+  v: z.string().max(64).optional(),
 })
 
 export default ImageQuerySchema

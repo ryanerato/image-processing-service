@@ -35,6 +35,7 @@ Returns the transformed image bytes with the matching `Content-Type`.
 | `crop` | `fit` \| `fill` \| `scale` | `fit` | Only applies when both `width` and `height` are set. |
 | `format` | `jpeg` \| `png` \| `webp` \| `avif` \| `gif` | source format | `jpg` is accepted as an alias for `jpeg`. |
 | `quality` | integer 1–100 | encoder default | |
+| `v` | string | – | Cache busting only; ignored during processing. |
 
 Unknown parameters are rejected with a 400, so typos fail loudly instead of being ignored.
 

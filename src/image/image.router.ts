@@ -14,7 +14,8 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     const query = parseQuery(req, ImageQuerySchema)
     const image = await fetchContent(query.url)
     const { data, info } = await transformImage(image, query)
-    return res.status(200).type(contentType(info.format)).send(data)
+    return res.setHeader('Cache-Control', 'public, max-age=604800')
+              .status(200).type(contentType(info.format)).send(data)
 })
 
 export default router
