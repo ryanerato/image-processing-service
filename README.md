@@ -38,7 +38,7 @@ Returns the transformed image bytes with the matching `Content-Type`.
 | `width` | integer 1–4096 | source width | |
 | `height` | integer 1–4096 | source height | |
 | `crop` | `fit` \| `fill` \| `scale` | `fit` | Only applies when both `width` and `height` are set. |
-| `format` | `jpeg` \| `png` \| `webp` \| `avif` \| `gif` | source format | `jpg` is accepted as an alias for `jpeg`. |
+| `format` | `jpeg` \| `png` \| `webp` \| `avif` \| `gif` | source format (PNG if the source can't be output, e.g. TIFF, SVG) | `jpg` is accepted as an alias for `jpeg`. |
 | `quality` | integer 1–100 | encoder default | |
 | `v` | string | – | Cache busting only; ignored during processing. |
 

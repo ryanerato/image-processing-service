@@ -31,20 +31,19 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
       img = img.resize({ width, height, fit: CROP_MODES[crop] })
     }
 
-    if (format || quality) {
-      // sharp reports AVIF sources as 'heif', the container format AVIF uses
-      const { format: detected } = await img.metadata()
-      const sourceFormat = detected === 'heif' ? 'avif' : detected
-      // sharp reads some formats it can't write (e.g. SVG); fall back to PNG
-      const fmt = format ?? (isOutputFormat(sourceFormat) ? sourceFormat : 'png')
-      if (fmt === 'jpeg') {
-        // JPEG does not support transparency
-        // Set a fill color, else default is black
-        // A caller-selectable background color is future work (see README)
-        img = img.flatten({ background: '#ffffff' })
-      }
-      img = img.toFormat(fmt, { quality })
+    // sharp reports AVIF sources as 'heif', the container format AVIF uses
+    const { format: detected } = await img.metadata()
+    const sourceFormat = detected === 'heif' ? 'avif' : detected
+    // sharp reads some formats it can't write (e.g. SVG); fall back to PNG
+    const fmt = format ?? (isOutputFormat(sourceFormat) ? sourceFormat : 'png')
+    if (fmt === 'jpeg') {
+      // JPEG does not support transparency
+      // Set a fill color, else default is black
+      // A caller-selectable background color is future work (see README)
+      img = img.flatten({ background: '#ffffff' })
     }
+    // Lower AVIF encoder effort: the default takes seconds per image
+    img = img.toFormat(fmt, { quality, ...(fmt === 'avif' ? { effort: 2 } : {}) })
 
     // Return both the image and metadata about it
     // Await ensures the error is caught and handled here instead of by each caller
