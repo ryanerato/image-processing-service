@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import express, { type Express, type Request, type Response, type NextFunction } from 'express'
 import { pinoHttp } from 'pino-http'
 
-import { fromError } from './errors.ts'
+import { fromError, AppError } from './errors.ts'
 import { logger } from './util/logger.ts'
 import ImageRouter from './image/image.router.ts'
 
@@ -36,6 +36,11 @@ export function createApp(): Express {
 
   app.use('/samples', express.static(SAMPLES_DIR))
   app.use(['/process', '/image'], ImageRouter)
+
+  // No routes matched, return simple error
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    next(new AppError(404, 'NOT_FOUND', `No route for ${req.method} ${req.path}`))
+  })
 
   // Must be the last handler set in order to catch all errors
   app.use(errorHandler)

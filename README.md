@@ -86,6 +86,7 @@ Every error has the same shape:
 | Status | Code | When |
 |---|---|---|
 | 400 | `INVALID_REQUEST` | A query param is missing or invalid (`details` lists each field) |
+| 404 | `NOT_FOUND` | No route matches the request path |
 | 422 | `CONTENT_TOO_LARGE` | Source content is over the size limit (default 10MB) |
 | 422 | `UNPROCESSABLE_IMAGE` | Source content isn't a supported image, or exceeds the pixel limit |
 | 502 | `SOURCE_ERROR` | Source responded with a non-2xx status |

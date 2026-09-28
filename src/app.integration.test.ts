@@ -106,6 +106,12 @@ describe('Images', () => {
     assert.equal(response.headers.get('cache-control'), null)
   })
 
+  test('unknown routes return 404 in the error shape', async () => {
+    const response = await fetch(app.url('/nope'))
+
+    await assertErrorShape(response, 404, 'NOT_FOUND')
+  })
+
   for (const [format, type] of [
     ['jpeg', 'image/jpeg'],
     ['png', 'image/png'],
