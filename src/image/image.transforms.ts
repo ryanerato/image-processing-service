@@ -32,6 +32,9 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
       const sourceFormat = detected === 'heif' ? 'avif' : detected
       // sharp reads some formats it can't write (e.g. SVG); fall back to PNG
       const fmt = format ?? (isOutputFormat(sourceFormat) ? sourceFormat : 'png')
+      if (fmt === 'jpeg') {
+        img = img.flatten({ background: '#ffffff' })
+      }
       img = img.toFormat(fmt, { quality })
     }
 

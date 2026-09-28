@@ -129,4 +129,16 @@ describe('transformImage', () => {
       assert.equal(info.height, 200)
     })
   })
+
+  describe('transparency', () => {
+    test('fills transparent areas with white when converting to JPEG', async () => {
+      const input = await sharp({
+        create: { width: 10, height: 10, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+      }).png().toBuffer()
+      const { data, info } = await transformImage(input, options({ format: 'jpeg' }))
+      assert.equal(info.format, 'jpeg')
+      const [r, g, b] = await sharp(data).raw().toBuffer()
+      assert.deepEqual([r, g, b], [255, 255, 255])
+    })
+  })
 })
