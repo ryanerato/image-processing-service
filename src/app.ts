@@ -3,7 +3,6 @@ import express, { type Express, type Request, type Response, type NextFunction }
 import { ZodError } from 'zod'
 import { pinoHttp } from 'pino-http'
 
-
 import { AppError } from './errors.ts'
 import { logger } from './util/logger.ts'
 
@@ -53,6 +52,7 @@ export function createApp(): Express {
   app.use('/samples', express.static(SAMPLES_DIR))
   app.use(['/process', '/image'], ImageRouter)
 
+  // Must be the last handler set in order to catch all errors
   app.use(errorHandler)
 
   return app

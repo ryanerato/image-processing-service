@@ -33,11 +33,16 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
       // sharp reads some formats it can't write (e.g. SVG); fall back to PNG
       const fmt = format ?? (isOutputFormat(sourceFormat) ? sourceFormat : 'png')
       if (fmt === 'jpeg') {
+        // JPEG does not support transparency
+        // Set a fill color, else default is black
+        // A caller-selectable background color is future work (see README)
         img = img.flatten({ background: '#ffffff' })
       }
       img = img.toFormat(fmt, { quality })
     }
 
+    // Return both the image and metadata about it
+    // Await ensures the error is caught and handled here instead of by each caller
     return await img.toBuffer({ resolveWithObject: true })
   } catch (err) {
     throw new UnprocessableImageError(err)
