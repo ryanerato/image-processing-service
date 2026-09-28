@@ -170,3 +170,7 @@ The service is stateless, so it scales horizontally behind a load balancer. `GET
 - **Video thumbnails** (`/video/thumbnail`, bonus): not implemented. It would extract a frame with ffmpeg and reuse the image transform.
 - **Streaming:** sources are buffered in memory, which is fine at 10MB. Larger limits would call for streaming.
 - **Background color:** transparency is filled with white when converting to JPEG; a caller-selectable color would be a small addition.
+
+## AI assistance
+
+Claude Code was used to scaffold the project, write most of the tests, and draft this README. The design decisions are mine, and I reviewed, edited, and tested everything it produced. Commits it contributed to are marked with an `Assisted-by: Claude Code` trailer.
