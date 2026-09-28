@@ -6,6 +6,7 @@ import { fromError } from './errors.ts'
 import { logger } from './util/logger.ts'
 import ImageRouter from './image/image.router.ts'
 
+// `next` function required for Express to register as an error handler
 function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   const error = fromError(err)
   if (error.status >= 500 || error.cause) req.log.error({ err: error }, error.code)
