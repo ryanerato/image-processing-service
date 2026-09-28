@@ -2,8 +2,9 @@ import assert from 'node:assert/strict'
 import { after, afterEach, before, describe, test } from 'node:test'
 import { delay, http, HttpResponse } from 'msw'
 
-import { fetchContent, MAX_BYTES } from './fetchContent.ts'
+import { fetchContent } from './fetchContent.ts'
 import { mswServer, startMswServer } from '../testing/mswServer.ts'
+import { config } from '../config.ts'
 
 const SOURCE_URL = 'https://images.test/cat.png'
 const CHUNK_BYTES = 1024 * 1024
@@ -58,24 +59,24 @@ describe('fetchContent', () => {
 
   test('throws TOO_LARGE when Content-Length exceeds the limit', async () => {
     respondWith(
-      () => new HttpResponse('x', { headers: { 'Content-Length': String(MAX_BYTES + 1) } }),
+      () => new HttpResponse('x', { headers: { 'Content-Length': String(config.SOURCE_MAX_BYTES + 1) } }),
     )
 
     await assert.rejects(fetchContent(SOURCE_URL), { code: 'CONTENT_TOO_LARGE' })
   })
 
   test('throws TOO_LARGE when the body exceeds the limit without Content-Length', async () => {
-    respondWith(() => new HttpResponse(streamBody(MAX_BYTES + 1)))
+    respondWith(() => new HttpResponse(streamBody(config.SOURCE_MAX_BYTES + 1)))
 
     await assert.rejects(fetchContent(SOURCE_URL), { code: 'CONTENT_TOO_LARGE' })
   })
 
   test('accepts a body of exactly the limit', async () => {
-    respondWith(() => new HttpResponse(streamBody(MAX_BYTES)))
+    respondWith(() => new HttpResponse(streamBody(config.SOURCE_MAX_BYTES)))
 
     const body = await fetchContent(SOURCE_URL)
 
-    assert.equal(body.length, MAX_BYTES)
+    assert.equal(body.length, config.SOURCE_MAX_BYTES)
   })
 
   test('throws SOURCE_TIMEOUT (504) when the source is slow', async () => {

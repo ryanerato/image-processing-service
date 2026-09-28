@@ -1,20 +1,19 @@
 import { AppError } from "../errors.ts"
+import { config } from '../config.ts'
 
-class MaxSizeExceededError extends AppError {
+const MAX_MB = 10
+
+export class MaxSizeExceededError extends AppError {
   constructor() {
     super(422, 'CONTENT_TOO_LARGE', `Content exceeds ${MAX_MB}MB limit`)
   }
 }
 
-const MAX_MB = 10
-export const MAX_BYTES = MAX_MB * 1024 * 1024
-const TIMEOUT_MS = 5000
-
 export type FetchContentOptions = {
   timeoutMs?: number
 }
 
-export async function fetchContent(url: string, { timeoutMs = TIMEOUT_MS }: FetchContentOptions = {}): Promise<Buffer> {
+export async function fetchContent(url: string, { timeoutMs = config.SOURCE_TIMEOUT_MS }: FetchContentOptions = {}): Promise<Buffer> {
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) })
     if (!res.ok) {
@@ -22,14 +21,14 @@ export async function fetchContent(url: string, { timeoutMs = TIMEOUT_MS }: Fetc
     }
 
     // Reject early if the declared size is too big; the header can be missing or wrong, so the body is counted below too
-    if (Number(res.headers.get('content-length')) > MAX_BYTES) throw new MaxSizeExceededError()
+    if (Number(res.headers.get('content-length')) > config.SOURCE_MAX_BYTES) throw new MaxSizeExceededError()
 
     // Validate actual image size as it is loaded
     const chunks: Uint8Array[] = []
     let total = 0
     for await (const chunk of res.body ?? []) {
       total += chunk.length
-      if (total > MAX_BYTES) throw new MaxSizeExceededError()
+      if (total > config.SOURCE_MAX_BYTES) throw new MaxSizeExceededError()
       chunks.push(chunk)
     }
     return Buffer.concat(chunks)
