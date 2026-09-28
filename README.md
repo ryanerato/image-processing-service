@@ -151,7 +151,7 @@ src/
 
 ## Scaling
 
-The service is stateless, so it scales horizontally behind a load balancer.
+The service is stateless, so it scales horizontally behind a load balancer. `GET /health` returns `{ "status": "ok" }` for load balancer health checks.
 
 - **Caching:** responses are cacheable for 7 days, so browsers and CDNs serve repeat requests without reprocessing.
 - **CPU:** processing is CPU-bound; `sharp` uses multiple cores via `libuv`'s thread pool.

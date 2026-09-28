@@ -24,6 +24,12 @@ export function createApp(): Express {
   app.disable('x-powered-by')
   app.set('query parser', 'simple')
 
+  // Necessary if running behind a load balancer.
+  // Registered before logging so frequent health checks don't flood the logs.
+  app.get('/health', (req: Request, res: Response) => {
+    res.json({ status: 'ok' })
+  })
+
   // Log only what's needed to debug a request: source URLs can carry signed
   // tokens, and headers and client IPs are personal data
   app.use(pinoHttp({

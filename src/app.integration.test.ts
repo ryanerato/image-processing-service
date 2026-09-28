@@ -112,6 +112,13 @@ describe('Images', () => {
     await assertErrorShape(response, 404, 'NOT_FOUND')
   })
 
+  test('health check responds ok', async () => {
+    const response = await fetch(app.url('/health'))
+
+    assert.equal(response.status, 200)
+    assert.deepEqual(await response.json(), { status: 'ok' })
+  })
+
   for (const [format, type] of [
     ['jpeg', 'image/jpeg'],
     ['png', 'image/png'],
