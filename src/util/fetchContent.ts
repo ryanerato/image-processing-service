@@ -1,7 +1,7 @@
 import { AppError } from "../errors.ts"
 import { config } from '../config.ts'
 
-const MAX_MB = 10
+const MAX_MB = config.SOURCE_MAX_BYTES / 1024 / 1024
 
 export class MaxSizeExceededError extends AppError {
   constructor() {
