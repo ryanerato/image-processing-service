@@ -3,7 +3,7 @@ import sharp, { type OutputInfo } from 'sharp'
 
 import ImageQuerySchema, { CROP_MODES, OUTPUT_FORMATS } from './image.schema.ts'
 import { UnprocessableImageError } from '../errors.ts'
-import { SOURCE_MAX_PIXELS } from '../config.ts'
+import { config } from '../config.ts'
 
 export type ImageOptions = Omit<z.infer<typeof ImageQuerySchema>, 'url'>
 
@@ -21,7 +21,7 @@ export async function transformImage(input: Buffer, options: ImageOptions): Prom
   try {
     const sharpOptions = {
       // Rejects images whose decoded size would exhaust memory (decompression bombs)
-      limitInputPixels: SOURCE_MAX_PIXELS,
+      limitInputPixels: config.SOURCE_MAX_PIXELS,
       // If EXIF data is present, ensure picture is in correct orientation
       autoOrient: true
     }
